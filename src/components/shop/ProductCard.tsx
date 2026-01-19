@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { ExternalLink } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ExternalLink, ShoppingBag } from 'lucide-react';
 import { type Product, formatPrice, generateWhatsAppLink } from '@/lib/products';
+import { useCart } from '@/contexts/CartContext';
 import {
   Dialog,
   DialogContent,
@@ -16,12 +18,19 @@ interface ProductCardProps {
 const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSize, setSelectedSize] = useState(product.sizes[0]);
+  const { addItem } = useCart();
+
+  const handleQuickAdd = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    addItem(product, product.sizes[0], 1);
+  };
 
   return (
     <>
-      <div
-        className="group product-card cursor-pointer"
-        onClick={() => setIsModalOpen(true)}
+      <Link
+        to={`/product/${product.id}`}
+        className="group product-card block"
         style={{ animationDelay: `${index * 100}ms` }}
       >
         <div className="relative aspect-[3/4] overflow-hidden bg-secondary mb-4">
@@ -37,10 +46,19 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
             </span>
           )}
 
-          {/* Quick View Overlay */}
+          {/* Quick Add Button */}
+          <button
+            onClick={handleQuickAdd}
+            className="absolute bottom-4 right-4 w-10 h-10 bg-background flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-foreground hover:text-background"
+            aria-label="Quick add to cart"
+          >
+            <ShoppingBag className="w-4 h-4" />
+          </button>
+
+          {/* View Details Overlay */}
           <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/5 transition-colors duration-500 flex items-center justify-center">
             <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-xs uppercase tracking-[0.15em] bg-background px-4 py-2">
-              Quick View
+              View Details
             </span>
           </div>
         </div>
@@ -52,7 +70,7 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
           <h3 className="font-serif text-lg mb-1">{product.name}</h3>
           <p className="text-sm font-medium">{formatPrice(product.price)}</p>
         </div>
-      </div>
+      </Link>
 
       {/* Product Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -107,18 +125,25 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
 
               {/* Action Buttons */}
               <div className="mt-auto space-y-3">
+                <button
+                  onClick={() => {
+                    addItem(product, selectedSize, 1);
+                    setIsModalOpen(false);
+                  }}
+                  className="btn-luxury w-full flex items-center justify-center gap-2"
+                >
+                  <ShoppingBag className="w-4 h-4" />
+                  Add to Cart
+                </button>
                 <a
                   href={generateWhatsAppLink(product, selectedSize)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-luxury w-full flex items-center justify-center gap-2"
+                  className="w-full flex items-center justify-center gap-2 border border-foreground py-3 px-6 text-xs uppercase tracking-[0.15em] hover:bg-foreground hover:text-background transition-all"
                 >
                   Order via WhatsApp
                   <ExternalLink className="w-4 h-4" />
                 </a>
-                <p className="text-xs text-center text-muted-foreground">
-                  Click to send order details directly to our WhatsApp
-                </p>
               </div>
             </div>
           </div>

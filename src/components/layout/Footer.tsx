@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Instagram, Facebook, Twitter } from 'lucide-react';
+import { Instagram, Facebook, Twitter, Mail, Phone, MapPin } from 'lucide-react';
+import logo from '@/assets/logo.png';
 
 const Footer = () => {
   return (
@@ -8,17 +9,22 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-8">
           {/* Brand */}
           <div className="md:col-span-1">
-            <Link to="/" className="flex flex-col items-start">
-              <span className="font-serif text-2xl font-semibold tracking-wide">
-                ZUNITE STYLE
-              </span>
-              <span className="text-[10px] uppercase tracking-[0.3em] opacity-70 -mt-1">
-                Elevate Your Elegance
-              </span>
+            <Link to="/" className="inline-block mb-4">
+              <img src={logo} alt="ZUNITE STYLE" className="h-16 w-auto brightness-0 invert" />
             </Link>
-            <p className="mt-4 text-sm leading-relaxed opacity-80">
+            <p className="text-sm leading-relaxed opacity-80">
               Premium fashion for the modern individual. Quality craftsmanship meets timeless design.
             </p>
+            <div className="mt-4 space-y-2">
+              <div className="flex items-center gap-2 text-sm opacity-80">
+                <Mail className="w-4 h-4" />
+                <span>contact@zunitestyle.com</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm opacity-80">
+                <Phone className="w-4 h-4" />
+                <span>+1 (555) 123-4567</span>
+              </div>
+            </div>
           </div>
 
           {/* Quick Links */}
