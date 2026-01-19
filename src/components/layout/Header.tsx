@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ShoppingBag } from 'lucide-react';
+import { useCart } from '@/contexts/CartContext';
+import logo from '@/assets/logo.png';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { totalItems, setIsCartOpen } = useCart();
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -20,13 +23,8 @@ const Header = () => {
       <div className="container mx-auto">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="flex flex-col items-start">
-            <span className="font-serif text-2xl md:text-3xl font-semibold tracking-wide">
-              ZUNITE STYLE
-            </span>
-            <span className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-muted-foreground -mt-1">
-              Elevate Your Elegance
-            </span>
+          <Link to="/" className="flex items-center gap-3">
+            <img src={logo} alt="ZUNITE STYLE" className="h-12 md:h-14 w-auto" />
           </Link>
 
           {/* Desktop Navigation */}
@@ -48,13 +46,18 @@ const Header = () => {
 
           {/* Icons */}
           <div className="flex items-center gap-4">
-            <Link 
-              to="/shop" 
-              className="p-2 hover:bg-secondary transition-colors"
-              aria-label="Shop"
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className="relative p-2 hover:bg-secondary transition-colors"
+              aria-label="Open cart"
             >
               <ShoppingBag className="w-5 h-5" />
-            </Link>
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center bg-foreground text-background text-[10px] font-medium rounded-full">
+                  {totalItems}
+                </span>
+              )}
+            </button>
 
             {/* Mobile Menu Button */}
             <button
